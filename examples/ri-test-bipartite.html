@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style type="text/css">
+        table {
+            display: inline-table;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        #map { height: 300px; width:1000px; }
+
+        #bounds { height: 20px;}
+
+    </style>
+
+    <script src="../globi-dist.js" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+    <link rel="stylesheet" href="../leaflet-locationfilter/src/locationfilter.css"/>
+    <script src="../leaflet-locationfilter/src/locationfilter.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+
+        window.onload = function () {
+
+            //map
+            var map = L.map('map').setView([51.505, -0.09], 3);
+            L.tileLayer('http://services.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer/tile/{z}/{y}/{x}', { attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>', maxZoom: 18 }).addTo(map);
+
+            //leaflet get bounds
+            var locationFilter = new L.LocationFilter().addTo(map);
+            var bounds = locationFilter.getBounds();
+
+
+            locationFilter.on("change", function (e) {
+                console.log(e.bounds);
+                console.log(e.bounds._northEast.lat);
+                console.log(e.bounds._northEast.lng);
+                console.log(e.bounds._southWest.lat);
+                console.log(e.bounds._southWest.lng);
+
+                var sourceTaxaSelect = $('select[name=source-taxa]').val();
+                console.log(sourceTaxaSelect);
+                var targetTaxaSelect = $('select[name=target-taxa]').val();
+                console.log(targetTaxaSelect);
+    
+                var selectedarea = { nw_lat: e.bounds._northEast.lat, nw_lng: e.bounds._southWest.lng, se_lat: e.bounds._southWest.lat, se_lng: e.bounds._northEast.lng};
+                var options = { location: selectedarea, width: 1000, height: 500, sourceTaxa: [sourceTaxaSelect], targetTaxa: [targetTaxaSelect] };
+
+
+    
+
+    
+    
+                // event emitter (ee) object is returned for client to respond to events
+                var ee = globi.addInteractionGraph(options);
+                $('#interaction_graph').empty();
+                $('#interaction_graph_legend').empty();
+    
+                // interaction data is received and has been rendered
+                ee.on('ready', function () {
+                    ee.appendGraphTo(document.querySelector('#interaction_graph'));                    
+                    ee.appendLegendTo(document.querySelector('#interaction_graph_legend'));
+                });
+    
+                // specific interactions have been selected by user
+                ee.on('select', function (interactions) {
+                    // use d3 to render interaction data into html div elements
+                    globi.d3.selectAll('#selected-interactions').selectAll('div')
+                            .data(interactions)
+                            .enter().append('div').text(function (d) {
+                                // use interaction data to do something meaningful
+                                return '[' + d.source.name + ' (' + d.source.id + ')]-[:'
+                                        + d.type
+                                        + ']->[' + d.target.name + ' (' + d.target.id + ')]';
+                            });
+                });
+    
+                ee.on('deselect', function () {
+                    // remove previously rendered interaction information
+                    globi.d3.selectAll('#selected-interactions').selectAll('div').remove();
+                });
+
+
+
+
+                //From http://runnable.com/UhY_jE3QH-IlAAAP/how-to-parse-a-json-file-using-jquery
+      
+                //When DOM loaded we attach click event to button
+
+                //after button is clicked we download the data
+
+                //start ajax request
+                $.ajax({
+                    url: "http://api.globalbioticinteractions.org/interaction?type=json.v2&nw_lat="+e.bounds._northEast.lat+"&nw_lng="+e.bounds._southWest.lng+"&se_lat="+e.bounds._southWest.lat+"&se_lng="+e.bounds._northEast.lng+"&sourceTaxon="+sourceTaxaSelect+"&targetTaxon="+targetTaxaSelect,
+                    //force to handle it as text
+                    dataType: "text",
+                    success: function(data) {
+                        
+                        //data downloaded so we call parseJSON function 
+                        //and pass downloaded data
+                        var json = $.parseJSON(data);
+                        //now json variable contains data in json format
+                        //let's display a few items
+                        console.log(json.length)
+                        $('#results').empty();
+                        for (var i = 0; i < json.length; i++) {
+                            $('#results').append('Interactions: ' + json[i].source.name  + ' ' + json[i].interaction_type + ' ' + json[i].target.name + '</br>');
+                        }
+                    }
+                });
+    
+    
+            });
+
+        };
+
+
+    </script>
+
+
+</head>
+<body>
+ <div id="map"></div>
+ <div id="map-bounds"><div>
+
+    <input type="button" value="Create Visualization" class="button" />
+    <br />
+
+
+<p>Welcome to GloBI's Proof of Concept - Bipartite graph representation source (e.g. predator) and target (e.g. prey)
+    taxa.</p>
+
+
+<form>
+    Select your source Taxa
+    <select name="source-taxa" id="source-taxa">
+        <option value="Arthropoda">Arthropoda</option>
+        <option value="Mammalia">Mammalia</option>
+        <option value="Actinopterygii">Actinopterygii</option>
+        <option value="Arachnida">Arachnida</option>
+        <option value="Mollusca">Mollusca</option>
+        <option value="Plantae">Plantae</option>
+        <option value="Amphibia" selected>Amphibia</option>
+        <option value="Reptilia">Reptilia</option>
+        <option value="Bacteria">Bacteria</option>
+        <option value="other">other</option>
+    </select>
+    Select Your Target Taxa
+    <select name="target-taxa" id="target-taxa">
+        <option value="Arthropoda">Arthropoda</option>
+        <option value="Mammalia">Mammalia</option>
+        <option value="Actinopterygii">Actinopterygii</option>
+        <option value="Arachnida">Arachnida</option>
+        <option value="Mollusca" selected>Mollusca</option>
+        <option value="Plantae">Plantae</option>
+        <option value="Amphibia">Amphibia</option>
+        <option value="Reptilia">Reptilia</option>
+        <option value="Bacteria">Bacteria</option>
+        <option value="other">other</option>    </select>
+</form>
+
+    <span id="results"></span>
+
+<table id="visualization">
+    <tr>
+        <td>
+            <span class="chart" id="interaction_graph"/>
+        </td>
+        <td>
+            <span id="interaction_graph_legend"/>
+        </td>
+    </tr>
+    <td width='1000'>
+
+        <span id="selected-interactions"/>
+    </td>
+    </tr>
+    <tr>
+        <td>
+
+        </td>
+    </tr>
+
+</table>
+
+
+</body>
+</html>
