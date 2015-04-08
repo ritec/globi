@@ -91,13 +91,6 @@
 
 
 
-
-                //From http://runnable.com/UhY_jE3QH-IlAAAP/how-to-parse-a-json-file-using-jquery
-      
-                //When DOM loaded we attach click event to button
-
-                //after button is clicked we download the data
-
                 //start ajax request
                 $.ajax({
                     url: "http://api.globalbioticinteractions.org/interaction?type=json.v2&nw_lat="+e.bounds._northEast.lat+"&nw_lng="+e.bounds._southWest.lng+"&se_lat="+e.bounds._southWest.lat+"&se_lng="+e.bounds._northEast.lng+"&sourceTaxon="+sourceTaxaSelect+"&targetTaxon="+targetTaxaSelect,
