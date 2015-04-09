@@ -5,7 +5,7 @@
     <style type="text/css">
         body{
             width:1200px;
-            margin:100px auto;
+            margin:50px;
         }
 
         #map { 
@@ -13,7 +13,7 @@
         }
 
         #bounds { 
-            height: 20px;
+            height: 10px;
         }
 
         svg text{
@@ -100,7 +100,7 @@
                             .append("g").attr("transform","translate("+ margin.l+","+margin.t+")");
                         
                         var data = [ 
-                            {data:bP.partData(taxon_data,2), id:'SalesAttempts', header:["Channel","State", "Sales Attempts"]},
+                            {data:bP.partData(taxon_data,2), id:'TaxonInteractions', header:["Source","Target", "Taxon Interactions"]},
                         ];
                         
                         bP.draw(data, svg);
