@@ -3,21 +3,21 @@
 <head>
     <meta charset="utf-8">
     <style type="text/css">
-        body{
-            width:1200px;
-            margin:50px;
-        }
-
         #map { 
-            height: 300px; width:1000px; 
+            height: 300px; 
+            width:1000px; 
         }
 
         #bounds { 
             height: 10px;
         }
 
+        p#instructions {
+            width:1000px; 
+        }
+
         svg text{
-            font-size:12px;
+            font-size:10px;
         }
         
         rect{
@@ -44,7 +44,7 @@
         window.onload = function () {
 
             //map
-            var map = L.map('map').setView([51.505, -0.09], 4);
+            var map = L.map('map').setView([51.505, -0.09], 5);
             L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
                 type: 'sat',
                 ext: 'jpg',
@@ -88,17 +88,15 @@
                             //creating array of arrays for new bipartite to consume
                             //The following error in console: 
                             taxon_data.push([ json[i].source.name  + "","" + json[i].target.name, 1, 1]);
-
-
-
                         }
 
                         console.log(JSON.stringify(taxon_data, null, 4));
                         JSON.stringify(taxon_data, null, 4);
                         //new bipartite code
 
+                        $('svg').empty();
+                        var width = 1100, height = 700, margin ={b:0, t:40, l:170, r:50};
 
-                        var width = 1100, height = 610, margin ={b:0, t:40, l:170, r:50};
 
                         var svg = d3.select("body")
                             .append("svg").attr('width',width).attr('height',(height+margin.b+margin.t))
@@ -126,14 +124,11 @@
 </head>
 <body>
  <div id="map"></div>
- <div id="map-bounds"><div>
-
+ <div id="map-bounds"></div>
     <br />
 
-<p>Welcome to GloBI's Proof of Concept - Bipartite graph representation source (e.g. predator) and target (e.g. prey)
-    taxa.</p>
-
-
+<p id="instructions">Please, select a geographic area in the map and source (e.g. predator) and target (e.g. prey)
+    taxas in order to generate a bipartite graph of interactions between the selected taxas within the bounding box. If too many interactions are found, consider decreasing the size of the geographic bounding box.</p>
 <form>
     Select your source Taxa
     <select name="source-taxa" id="source-taxa">
@@ -161,9 +156,9 @@
         <option value="Bacteria">Bacteria</option>
         <option value="other">other</option>    </select>
 </form>
-
+<br/>
     <span id="results"></span>
-
+    <br />
 
 </body>
 </html>
