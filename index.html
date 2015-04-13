@@ -3,17 +3,30 @@
 <head>
     <meta charset="utf-8">
     <style type="text/css">
+
+        #container {
+            width:100%; 
+        }
         #map { 
-            height: 300px; 
-            width:1000px; 
+            height:400px; 
+            width:900px; 
         }
 
         #bounds { 
             height: 10px;
         }
 
-        p#instructions {
+        #bipartite { 
+            height: 300px; 
             width:1000px; 
+        }
+        #results {
+            align:right;
+            width:50%;
+        }
+
+        p#instructions {
+            width:900px; 
         }
 
         svg text{
@@ -90,13 +103,11 @@
                             taxon_data.push([ json[i].source.name  + "","" + json[i].target.name, 1, 1]);
                         }
 
-                        console.log(JSON.stringify(taxon_data, null, 4));
                         JSON.stringify(taxon_data, null, 4);
                         //new bipartite code
 
-                        $('svg').empty();
+                        $('svg').remove();
                         var width = 1100, height = 700, margin ={b:0, t:40, l:170, r:50};
-
 
                         var svg = d3.select("body")
                             .append("svg").attr('width',width).attr('height',(height+margin.b+margin.t))
@@ -123,42 +134,44 @@
 
 </head>
 <body>
- <div id="map"></div>
- <div id="map-bounds"></div>
-    <br />
+        <p id="instructions">Please, select a geographic area in the map and source (e.g. predator) and target (e.g. prey)
+        taxas in order to generate a bipartite graph of interactions between the selected taxas within the bounding box. If too many    interactions are found, consider decreasing the size of the geographic bounding box.</p>
+        <form>
+            Select your source Taxa
+            <select name="source-taxa" id="source-taxa">
+                <option value="Arthropoda">Arthropoda</option>
+                <option value="Mammalia">Mammalia</option>
+                <option value="Actinopterygii">Actinopterygii</option>
+                <option value="Arachnida">Arachnida</option>
+                <option value="Mollusca">Mollusca</option>
+                <option value="Plantae">Plantae</option>
+                <option value="Amphibia" selected>Amphibia</option>
+                <option value="Reptilia">Reptilia</option>
+                <option value="Bacteria">Bacteria</option>
+                <option value="other">other</option>
+            </select>
+            Select Your Target Taxa
+            <select name="target-taxa" id="target-taxa">
+                <option value="Arthropoda">Arthropoda</option>
+                <option value="Mammalia">Mammalia</option>
+                <option value="Actinopterygii">Actinopterygii</option>
+                <option value="Arachnida">Arachnida</option>
+                <option value="Mollusca" selected>Mollusca</option>
+                <option value="Plantae">Plantae</option>
+                <option value="Amphibia">Amphibia</option>
+                <option value="Reptilia">Reptilia</option>
+                <option value="Bacteria">Bacteria</option>
+                <option value="other">other</option>    </select>
+        </form>
+    </br>
+<div id="container">
+    <div id="map"></div>
+    <div id="map-bounds"></div>
+    </br>
 
-<p id="instructions">Please, select a geographic area in the map and source (e.g. predator) and target (e.g. prey)
-    taxas in order to generate a bipartite graph of interactions between the selected taxas within the bounding box. If too many interactions are found, consider decreasing the size of the geographic bounding box.</p>
-<form>
-    Select your source Taxa
-    <select name="source-taxa" id="source-taxa">
-        <option value="Arthropoda">Arthropoda</option>
-        <option value="Mammalia">Mammalia</option>
-        <option value="Actinopterygii">Actinopterygii</option>
-        <option value="Arachnida">Arachnida</option>
-        <option value="Mollusca">Mollusca</option>
-        <option value="Plantae">Plantae</option>
-        <option value="Amphibia" selected>Amphibia</option>
-        <option value="Reptilia">Reptilia</option>
-        <option value="Bacteria">Bacteria</option>
-        <option value="other">other</option>
-    </select>
-    Select Your Target Taxa
-    <select name="target-taxa" id="target-taxa">
-        <option value="Arthropoda">Arthropoda</option>
-        <option value="Mammalia">Mammalia</option>
-        <option value="Actinopterygii">Actinopterygii</option>
-        <option value="Arachnida">Arachnida</option>
-        <option value="Mollusca" selected>Mollusca</option>
-        <option value="Plantae">Plantae</option>
-        <option value="Amphibia">Amphibia</option>
-        <option value="Reptilia">Reptilia</option>
-        <option value="Bacteria">Bacteria</option>
-        <option value="other">other</option>    </select>
-</form>
-<br/>
-    <span id="results"></span>
-    <br />
+    <span id="results">
+    </span>
+</div>
 
 </body>
 </html>
