@@ -96,6 +96,7 @@
 
 
                         $('#results').empty();
+                        $('#results').append('Total interactions found: ' + json.length + '</br>');
                         for (var i = 0; i < json.length; i++) {
                             $('#results').append('Interactions: ' + json[i].source.name  + ' ' + json[i].interaction_type + ' ' + json[i].target.name + '</br>');
                             //creating array of arrays for new bipartite to consume
