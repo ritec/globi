@@ -38,6 +38,7 @@
         }
 
     </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -73,9 +74,7 @@
             locationFilter.on("change", function (e) {
 
                 var sourceTaxaSelect = $('select[name=source-taxa]').val();
-                console.log(sourceTaxaSelect);
                 var targetTaxaSelect = $('select[name=target-taxa]').val();
-                console.log(targetTaxaSelect);
     
                 var selectedarea = { nw_lat: e.bounds._northEast.lat, nw_lng: e.bounds._southWest.lng, se_lat: e.bounds._southWest.lat, se_lng: e.bounds._northEast.lng};
                 var options = { location: selectedarea, width: 1000, height: 500, sourceTaxa: [sourceTaxaSelect], targetTaxa: [targetTaxaSelect] };
@@ -88,8 +87,6 @@
                     dataType: "text",
                     success: function(data) {
                         var json = $.parseJSON(data);
-                        console.log(json.length)
-
 
                         var taxon_data = [];
                         var valueToPush = [];
