@@ -68,7 +68,9 @@
 
             //leaflet get bounds
             var locationFilter = new L.LocationFilter().addTo(map);
+            locationFilter.enable(true);
             var bounds = locationFilter.getBounds();
+            var isEnabled = locationFilter.isEnabled();
 
             locationFilter.on("change", function (e) {
 
